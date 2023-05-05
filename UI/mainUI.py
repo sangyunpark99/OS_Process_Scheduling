@@ -13,8 +13,15 @@ class MyWindow(QMainWindow):
 
         # main_label
         main_label = QLabel("Process Scheduling Simulator", self)
-        main_label.resize(200, 20)
-        main_label.move(439, 0)
+        main_label.setFont(QFont('',30))
+        main_label.resize(400, 40)
+        main_label.move(439, 30)
+
+        # Team_label
+        team_label = QLabel("오예스 Team v1.0.0", self)
+        team_label.resize(150,30)
+        team_label.setFont(QFont('',15))
+        team_label.move(439,70)
 
         # logo_label
         logo_label = QLabel(self)

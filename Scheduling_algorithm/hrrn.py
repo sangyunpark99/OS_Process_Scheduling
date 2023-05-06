@@ -1,6 +1,9 @@
 import heapq
+import matplotlib.pyplot as plt
+import numpy as np
 
-def spn(processes, pcore, ecore, arrival_time, burst_time):
+
+def hrrn_algorithm(processes, pcore, ecore, arrival_time, burst_time):
     # 각 프로세스의 대기 시간, 반환 시간, 정규화된 반환 시간을 저장할 리스트 초기화
     waiting_time = [0] * processes
     turnaround_time = [0] * processes
@@ -56,10 +59,6 @@ def spn(processes, pcore, ecore, arrival_time, burst_time):
             # process_queue에서 min_arrival_time보다 작은 도착 시간을 갖는 프로세스
             # = 일찍 도착해서 기다리고 있는 프로세스
             smaller_arrival_time_processes = [process for process in process_queue if process[0] <= min_arrival_time]
-            # for process in process_queue:
-            #     if process[0] <= min_arrival_time:
-            #         smaller_arrival_time_processes.append(process)
-
 
             for process in smaller_arrival_time_processes:
                 x = process[1]  # 튜플 값 중 2번째 인덱스 값을 x에 할당
@@ -74,9 +73,6 @@ def spn(processes, pcore, ecore, arrival_time, burst_time):
 
             process_queue.remove(smaller_arrival_time_processes[0])
             heapq.heapify(process_queue)
-            # if smaller_arrival_time_processes[0] in process_queue:
-            #     process_queue.remove(smaller_arrival_time_processes[0])
-            #     heapq.heapify(process_queue)
 
         # 실행 시작 시간 계산 = 프로세스 도착 시간, finish_time 비교
 
@@ -133,6 +129,20 @@ def calculate_response_ratio(waiting_time, burst_time):
     return response_ratio
 
 
+def draw_gantt_chart(scheduling_order, start_times, end_times, processors_used):
+    plt.figure(figsize=(10, 6))
+
+    for i, (start, end, process) in enumerate(zip(start_times, end_times, scheduling_order)):
+        plt.barh(process, end - start, left=start, height=0.5)
+        plt.text(start + (end - start) / 2, process, f"P{i + 1}", color='white', fontsize=12, ha='center', va='center')
+
+    plt.xlabel("Time")
+    plt.ylabel("Processor")
+    plt.title("Gantt Chart")
+    plt.grid(True)
+    plt.show()
+
+
 processes = int(input("# of Processes: "))
 processors = int(input("# of Processors: "))
 pcore = int(input("# of P core: "))
@@ -143,8 +153,9 @@ arrival_time = list(map(int, input_arrival.split()))
 input_burst = input("Burst time: ")
 burst_time = list(map(int, input_burst.split()))
 
-waiting_times, turnaround_times, normalized_turnaround_times, core_consumption = spn(processes, pcore, ecore,
-                                                                                     arrival_time, burst_time)
+waiting_times, turnaround_times, normalized_turnaround_times, core_consumption = hrrn_algorithm(processes, pcore, ecore,
+                                                                                                arrival_time,
+                                                                                                burst_time)
 
 # 결과 출력
 for i in range(processes):
